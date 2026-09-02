@@ -2,7 +2,7 @@
 
 Checks whether DWI signal-to-noise ratio differs between the Horizontal
 Meridian (HM) and Vertical Meridian (UVM+LVM) cortical ROIs used in the
-VISCONTI retinotopy/connectivity analysis. This is a confound check for the
+VISCONN retinotopy/connectivity analysis. This is a confound check for the
 tractography-based connectivity claims: if HM and VM regions have
 systematically different DWI SNR, that alone could produce a spurious
 difference in streamline counts between them.
@@ -12,7 +12,7 @@ difference in streamline counts between them.
 - `compute_dwi_snr_hm_vm.py` — per-subject: builds the HM/UVM/LVM ROI masks
   from `polarAngle.nii.gz` / `eccentricity.nii.gz` / `varea.nii.gz` (same
   angle-range definition as `compute_hm_vm_from_raw_retinotopy.py` in
-  `VISCONTI_analysis/code/scripts`: HM=75-105deg, UVM=0-15deg, LVM=165-180deg,
+  `VISCONN_analysis/code/scripts`: HM=75-105deg, UVM=0-15deg, LVM=165-180deg,
   restricted to varea>0 and eccentricity 0-90deg), then computes DWI SNR in
   each ROI with scilpy's `compute_snr` (mean signal in the ROI / std of a
   shared background-noise mask, auto-estimated once per subject via
@@ -84,7 +84,7 @@ Batch over subjects (adjust `--retino-subdir`/`--dwi-rel`/`--bval-rel`/
 
 ```bash
 python compute_dwi_snr_hm_vm.py \
-    --base-dir ~/data/VISCONTI \
+    --base-dir ~/data/VISCONN \
     --out-dir ./work --output-csv hm_vm_dwi_snr.csv
 
 python test_hm_vs_vm_dwi_snr.py hm_vm_dwi_snr.csv
