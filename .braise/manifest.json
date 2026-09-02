@@ -1,0 +1,81 @@
+{
+  "name": "app-dwi-hm-vm-snr",
+  "github": "gamorosino/app-dwi-hm-vm-snr",
+  "desc": "Computes DWI signal-to-noise ratio (SNR) within Horizontal Meridian (HM) and Vertical Meridian (UVM/LVM) cortical ROIs, per subject. ROI masks are built from pRF retinotopy maps (polarAngle/eccentricity/varea), then SNR is computed with scilpy's compute_snr (mean b0 signal in the ROI / std of an auto-estimated background-noise mask). Used as a confound check for tractography-based HM-vs-VM connectivity comparisons.",
+  "config": {
+    "dwi": {
+      "type": "input",
+      "file_id": "dwi",
+      "input_id": "dwi"
+    },
+    "bvals": {
+      "type": "input",
+      "file_id": "bvals",
+      "input_id": "dwi"
+    },
+    "bvecs": {
+      "type": "input",
+      "file_id": "bvecs",
+      "input_id": "dwi"
+    },
+    "polarAngle": {
+      "type": "input",
+      "file_id": "polarAngle",
+      "input_id": "prf"
+    },
+    "eccentricity": {
+      "type": "input",
+      "file_id": "eccentricity",
+      "input_id": "prf"
+    },
+    "varea": {
+      "type": "input",
+      "file_id": "varea",
+      "input_id": "prf"
+    },
+    "varea_labels": {
+      "id": "varea_labels",
+      "type": "string",
+      "placeholder": "",
+      "advanced": true,
+      "desc": "Comma-separated varea label(s) to restrict the ROI to (e.g. '1' for V1 only). Empty = all Benson14 visual areas (varea>0).",
+      "default": ""
+    },
+    "b0_thr": {
+      "id": "b0_thr",
+      "type": "number",
+      "placeholder": "",
+      "advanced": true,
+      "desc": "b-value threshold below which a volume is treated as a b0.",
+      "default": 50.0
+    }
+  },
+  "inputs": [
+    {
+      "id": "dwi",
+      "datatype": "neuro/dwi",
+      "datatype_tags": [],
+      "optional": false,
+      "multi": false,
+      "advanced": false
+    },
+    {
+      "id": "prf",
+      "datatype": "neuro/prf",
+      "datatype_tags": [],
+      "optional": false,
+      "multi": false,
+      "advanced": false
+    }
+  ],
+  "outputs": [
+    {
+      "id": "stats",
+      "desc": "Per-subject mean DWI SNR (b0) in HM/UVM/LVM cortical ROIs, one row per meridian, with voxel counts.",
+      "datatype": "neuro/SNR_and_dMRI_stats",
+      "datatype_tags": [],
+      "archive": true
+    }
+  ],
+  "invoke": "python3 compute_dwi_snr_hm_vm.py --subject subject --dwi \"{dwi}\" --bval \"{bvals}\" --bvec \"{bvecs}\" --polar-angle \"{polarAngle}\" --eccentricity \"{eccentricity}\" --varea \"{varea}\" --varea-labels \"{varea_labels}\" --b0-thr \"{b0_thr}\" --out-dir ./work --out-csv stats/some.csv"
+}

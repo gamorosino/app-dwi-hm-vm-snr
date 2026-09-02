@@ -1,0 +1,9 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+
+# brainlife.io runtime -- written by the orchestrator, never commit the real one
+config.json
+
+# app output directory
+out_dir/

@@ -1,0 +1,10 @@
+{
+  "dwi": "dwi.nii.gz",
+  "bvals": "bvals.bvals",
+  "bvecs": "bvecs.bvecs",
+  "polarAngle": "polarAngle.nii.gz",
+  "eccentricity": "eccentricity.nii.gz",
+  "varea": "varea.nii.gz",
+  "varea_labels": "",
+  "b0_thr": 50.0
+}
