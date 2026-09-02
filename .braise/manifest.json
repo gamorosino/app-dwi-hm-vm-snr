@@ -77,5 +77,5 @@
       "archive": true
     }
   ],
-  "invoke": "python compute_dwi_snr_hm_vm.py --subject subject --dwi \"{dwi}\" --bval \"{bvals}\" --bvec \"{bvecs}\" --polar-angle \"{polarAngle}\" --eccentricity \"{eccentricity}\" --varea \"{varea}\" --varea-labels \"{varea_labels}\" --b0-thr \"{b0_thr}\" --out-dir ./work --out-csv stats/some.csv"
+  "invoke": "python3 compute_dwi_snr_hm_vm.py --subject subject --dwi \"{dwi}\" --bval \"{bvals}\" --bvec \"{bvecs}\" --polar-angle \"{polarAngle}\" --eccentricity \"{eccentricity}\" --varea \"{varea}\" --varea-labels \"{varea_labels}\" --b0-thr \"{b0_thr}\" --out-dir ./work --out-csv stats/some.csv"
 }

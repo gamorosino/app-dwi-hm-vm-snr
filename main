@@ -13,7 +13,7 @@ set -e
 
 mkdir -p stats
 
-singularity exec -e docker://gamorosino/tract_align:v1.1 python _brainlife_run.py
+singularity exec -e docker://gamorosino/tract_align:v1.1 micromamba run -n tract_align python3 _brainlife_run.py
 
 [ -z "$(ls -A stats)" ] && echo "no output produced" && exit 1
 exit 0

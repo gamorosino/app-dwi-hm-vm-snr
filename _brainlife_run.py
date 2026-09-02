@@ -11,7 +11,7 @@ import sys
 with open("config.json") as f:
     config = json.load(f)
 
-command = 'python compute_dwi_snr_hm_vm.py --subject subject --dwi "{dwi}" --bval "{bvals}" --bvec "{bvecs}" --polar-angle "{polarAngle}" --eccentricity "{eccentricity}" --varea "{varea}" --varea-labels "{varea_labels}" --b0-thr "{b0_thr}" --out-dir ./work --out-csv stats/some.csv'.format(**config)
+command = 'python3 compute_dwi_snr_hm_vm.py --subject subject --dwi "{dwi}" --bval "{bvals}" --bvec "{bvecs}" --polar-angle "{polarAngle}" --eccentricity "{eccentricity}" --varea "{varea}" --varea-labels "{varea_labels}" --b0-thr "{b0_thr}" --out-dir ./work --out-csv stats/some.csv'.format(**config)
 print(f"+ {command}")
 result = subprocess.run(shlex.split(command))
 sys.exit(result.returncode)
