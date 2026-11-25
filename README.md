@@ -1,11 +1,83 @@
-# DWI SNR: Horizontal vs Vertical Meridian
+<h1 align="center">DWI SNR (HM vs VM)</h1>
 
-Checks whether DWI signal-to-noise ratio differs between the Horizontal
-Meridian (HM) and Vertical Meridian (UVM+LVM) cortical ROIs used in the
-VISCONN retinotopy/connectivity analysis. This is a confound check for the
-tractography-based connectivity claims: if HM and VM regions have
-systematically different DWI SNR, that alone could produce a spurious
-difference in streamline counts between them.
+<p align="center">
+  Computes DWI b0 signal-to-noise ratio in horizontal- and vertical-meridian visual cortex ROIs built from Benson14 retinotopy maps, using scilpy compute_snr.
+</p>
+
+<p align="center">
+  <a href="https://github.com/brainlife/abcd-spec"><img src="https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg" alt="ABCD Spec v1.1"></a>
+  <a href="https://doi.org/10.25663/brainlife.app.956"><img src="https://img.shields.io/badge/Brainlife-brainlife.app.956-blue.svg" alt="Run on brainlife.io"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-see_LICENSE-lightgrey.svg" alt="License"></a>
+</p>
+
+## At a glance
+
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Computes DWI b0 signal-to-noise ratio in horizontal- and vertical-meridian visual cortex ROIs built from Benson14 retinotopy maps, using scilpy compute_snr.**
+
+Builds HM (polar angle 75-105 deg), UVM (0-15 deg) and LVM (165-180 deg) ROIs from the prf polar angle, eccentricity and visual area maps (resampled to the DWI grid), estimates a background noise mask with median_otsu and computes the mean b0 SNR in each ROI. Use it as a confound check that HM and VM regions do not differ in DWI SNR before comparing their streamline counts. The prf maps must be in the same physical space as the DWI.
+
+| | |
+|---|---|
+| **Inputs** | `neuro/dwi` · `neuro/prf` |
+| **Outputs** | `neuro/SNR_and_dMRI_stats` |
+| **Container** | `gamorosino/tract_align:v1.1` |
+| **Resources** | 4 GB memory · 1 h walltime |
+| **Run it** | [doi.org/10.25663/brainlife.app.956](https://doi.org/10.25663/brainlife.app.956) |
+
+#### Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `dwi` | `neuro/dwi` | yes | DWI image with bvals and bvecs. |
+| `prf` | `neuro/prf` | yes | Retinotopy maps (polarAngle, eccentricity, varea), for example from Benson14, aligned to the DWI. |
+
+#### Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `stats` | `neuro/SNR_and_dMRI_stats` | Per-subject mean DWI SNR (b0) in HM/UVM/LVM cortical ROIs, one row per meridian, with voxel counts. |
+
+<details>
+<summary><b>Parameters</b> (2)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `varea_labels` | string |  | Comma-separated varea label(s) to restrict the ROI to (e.g. '1' for V1 only). Empty = all Benson14 visual areas (varea>0). |
+| `b0_thr` | number | `50` | b-value threshold below which a volume is treated as a b0. |
+
+</details>
+
+<!-- brainlife-app:end -->
+
+## Running the App
+
+### On brainlife.io
+
+Open the App at [doi.org/10.25663/brainlife.app.956](https://doi.org/10.25663/brainlife.app.956), choose `neuro/dwi`, `neuro/prf` from your project, set the parameters and press **Execute**. The results are saved to your project as `neuro/SNR_and_dMRI_stats`.
+
+### Locally
+
+You need [Singularity/Apptainer](https://apptainer.org/) (the App runs in `gamorosino/tract_align:v1.1`), [`jq`](https://jqlang.github.io/jq/).
+
+1. Clone this repository.
+2. Create `config.json` with the paths to your inputs and the parameters:
+
+   ```json
+   {
+       "dwi": "/path/to/dwi/dwi",
+       "bvals": "/path/to/dwi/bvals",
+       "bvecs": "/path/to/dwi/bvecs",
+       "polarAngle": "/path/to/prf/polarAngle",
+       "eccentricity": "/path/to/prf/eccentricity",
+       "varea": "/path/to/prf/varea",
+       "varea_labels": "",
+       "b0_thr": 50
+   }
+   ```
+
+3. Run `./main`.
 
 ## Scripts
 
@@ -74,18 +146,19 @@ test001      LVM 17.106253         18         4477
 (~1.5-2 min/subject, dominated by scilpy reloading the full 4D DWI volume
 once per ROI.)
 
-## Usage
+## Citing
 
-Single subject: see the test dataset example above.
+If you use this App, please cite it, the software it builds on and brainlife.io:
 
-Batch over subjects (adjust `--retino-subdir`/`--dwi-rel`/`--bval-rel`/
-`--bvec-rel` if your per-subject layout differs from `<subject>/prf/...` +
-`<subject>/dwi/dwi.{nii.gz,bvals,bvecs}`):
+- DWI SNR (HM vs VM). brainlife.io App. [doi:10.25663/brainlife.app.956](https://doi.org/10.25663/brainlife.app.956)
+- Garyfallidis et al. Dipy, a library for the analysis of diffusion MRI data. *Frontiers in Neuroinformatics* 8 (2014). [doi:10.3389/fninf.2014.00008](https://doi.org/10.3389/fninf.2014.00008)
+- Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
 
-```bash
-python compute_dwi_snr_hm_vm.py \
-    --base-dir ~/data/VISCONN \
-    --out-dir ./work --output-csv hm_vm_dwi_snr.csv
+## Authors
 
-python test_hm_vs_vm_dwi_snr.py hm_vm_dwi_snr.csv
-```
+Maintained by [@gamorosino](https://github.com/gamorosino).
+
+## License
+
+See [LICENSE](LICENSE).
